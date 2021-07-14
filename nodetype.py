@@ -3,15 +3,6 @@
 #James Stockton
 
 
-
-def main_solve(node_grid):
-    pass
-
-
-
-
-
-
 #function returns number of routes in out of node (used to determine node type)
 def routeSum(arr):
     sum = 0

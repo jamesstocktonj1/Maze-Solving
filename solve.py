@@ -4,7 +4,8 @@
 
 
 import time
-from node import *
+#from node import *
+#import main
 
 
 #node grid y, x
@@ -19,16 +20,16 @@ def getNextRoutes(node_grid, curCoord, prevCoord):
     pos_paths = []
 
     #straight or node is a possible path
-    if node_grid[curCoord[1] + 1][curCoord[0]].nodeType in valid_paths:
+    if node_grid[curCoord[1] + 1][curCoord[0]] in valid_paths:
         pos_paths.append([curCoord[0], curCoord[1] + 1])
 
-    if node_grid[curCoord[1] - 1][curCoord[0]].nodeType in valid_paths:
+    if node_grid[curCoord[1] - 1][curCoord[0]] in valid_paths:
         pos_paths.append([curCoord[0], curCoord[1] - 1])
 
-    if node_grid[curCoord[1]][curCoord[0] + 1].nodeType in valid_paths:
+    if node_grid[curCoord[1]][curCoord[0] + 1] in valid_paths:
         pos_paths.append([curCoord[0] + 1, curCoord[1]])
 
-    if node_grid[curCoord[1]][curCoord[0] - 1].nodeType in valid_paths:
+    if node_grid[curCoord[1]][curCoord[0] - 1] in valid_paths:
         pos_paths.append([curCoord[0] - 1, curCoord[1]])
 
     if prevCoord in pos_paths:
@@ -55,6 +56,7 @@ def dijkstra_solve(node_grid, start_coords, end_coords):
 
 
     isSolved = False
+    pathLength = 2
 
     while not isSolved:
     #for j in range(0, 22):
@@ -108,6 +110,10 @@ def dijkstra_solve(node_grid, start_coords, end_coords):
 
         #set paths as the newly found paths for next iteration
         paths = new_paths
+
+        pathLength += 1
+        if pathLength > 2000:
+            return paths[0]
 
         print("New Paths: " + str(len(paths)))
 

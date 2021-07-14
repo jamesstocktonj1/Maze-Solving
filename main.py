@@ -1,10 +1,23 @@
 
 from nodetype import *
-from node import *
 from solve import *
+from pathredux import *
 from PIL import Image, ImageColor
 
 #dijkstra solving algorithm 
+
+
+
+
+"""
+
+V1.1
+changes:
+    nodeGrid is now an 2D array of chars rather than Node objects which will reduce memory
+    therefore node.py file no longer exists
+
+
+"""
 
 
 
@@ -75,23 +88,21 @@ def setNodeTypes():
         nodeGrid.append([])
 
         for x in range(mazeSize[0]):
-            nodeGrid[y].append(Node([x, y]))
+            nodeGrid[y].append("X")
 
-            if nodeGrid[y][x].getCoords() == startCoord:
-                nodeGrid[y][x].setNodeType("B")
-                print("Start: " + str(nodeGrid[y][x].getCoords()))
+            if [x, y] == startCoord:
+                nodeGrid[y][x] = "B"
+                print("Start: " + str([x, y]))
 
-            elif nodeGrid[y][x].getCoords() == endCoord:
-                nodeGrid[y][x].setNodeType("E")
-                print("End: " + str(nodeGrid[y][x].getCoords()))
+            elif [x, y] == endCoord:
+                nodeGrid[y][x] = "E"
+                print("End: " + str([x, y]))
 
             elif (x == 0) or (x == mazeSize[0]-1) or (y == 0) or (y == mazeSize[1]-1):
-                nodeGrid[y][x].setNodeType("W")
+                nodeGrid[y][x] = "W"
             
             else:
-                subNode = getSubsection(x, y)
-
-                nodeGrid[y][x].setNodeType(getNodeType(subNode))
+                nodeGrid[y][x] = getNodeType(getSubsection(x, y))
 
 
 
@@ -99,6 +110,7 @@ def setNodeTypes():
 
 #creates colour coded image of maze square types
 def createSolveImageNodeTypes():
+    global nodeGrid
     
     #split file name in order to create new file name
     file_split = img_filename.split(".")
@@ -116,23 +128,23 @@ def createSolveImageNodeTypes():
         for x in range(mazeSize[0]):
 
             #begining pixel orange
-            if nodeGrid[y][x].getNodeType() == "B":
+            if nodeGrid[y][x] == "B":
                 img_solve.putpixel((x, y), ImageColor.getrgb("orange"))
 
             #end pixel orange
-            elif nodeGrid[y][x].getNodeType() == "E":
+            elif nodeGrid[y][x] == "E":
                 img_solve.putpixel((x, y), ImageColor.getrgb("orange"))
 
             #straight pixel yellow
-            elif nodeGrid[y][x].getNodeType() == "S":
+            elif nodeGrid[y][x] == "S":
                 img_solve.putpixel((x, y), ImageColor.getrgb("yellow"))
 
             #node pixel green
-            elif nodeGrid[y][x].getNodeType() == "N":
+            elif nodeGrid[y][x] == "N":
                 img_solve.putpixel((x, y), ImageColor.getrgb("green"))
 
             #dead end pixel red
-            elif nodeGrid[y][x].getNodeType() == "D":
+            elif nodeGrid[y][x] == "D":
                 img_solve.putpixel((x, y), ImageColor.getrgb("red"))
 
 
@@ -154,22 +166,48 @@ def createPathImage(solved_path):
     img_solve = Image.new('RGB', (mazeSize[0], mazeSize[1]))
 
 
-    for y in range(mazeSize[1]):
+    for c in solved_path:
+        img_solve.putpixel((c[0], c[1]), ImageColor.getrgb("green"))
 
-        for x in range(mazeSize[0]):
 
-            if [x, y] in solved_path:
-                img_solve.putpixel((x, y), ImageColor.getrgb("green"))
 
-            elif nodeGrid[y][x].getNodeType() != "W":
-                img_solve.putpixel((x, y), ImageColor.getrgb("white"))
+    #for y in range(mazeSize[1]):
 
+        #for x in range(mazeSize[0]):
+
+            #if [x, y] in solved_path:
+                #img_solve.putpixel((x, y), ImageColor.getrgb("green"))
+
+            #elif nodeGrid[y][x] != "W":
+                #img_solve.putpixel((x, y), ImageColor.getrgb("white"))
+    
     #save image and load preview
     img_solve.save(node_filename)
     img_solve.show()
 
 
+def createReductionImage():
 
+    #split file name in order to create new file name
+    file_split = img_filename.split(".")
+
+    #create node filename 
+    node_filename = file_split[0] + "_reduction." + file_split[1]
+
+    print("Creating " + node_filename + "...")
+
+    #load new image same size as original maze (RGB)
+    img_solve = Image.new('RGB', (mazeSize[0], mazeSize[1]))
+
+    for y in range(mazeSize[1]):
+
+        for x in range(mazeSize[0]):
+
+            if mazeGrid[y][x] == 1:
+                img_solve.putpixel((x, y), ImageColor.getrgb("white"))
+
+    #save image and load preview
+    img_solve.save(node_filename)
 
 
 
@@ -178,9 +216,9 @@ def printNodeTypes():
     for y in range(mazeSize[1]):
         print("")
 
-        for x in range(mazeSize[0]):
+        #for x in range(mazeSize[0]):
 
-            print(nodeGrid[y][x].getNodeType(), end="\t")
+        print(nodeGrid[y], end="\t")
 
 
             
@@ -188,23 +226,39 @@ def printNodeTypes():
 
 
 
+if __name__ == "__main__":
 
-loadMazeImage("mazes/normal.png")
+    loadMazeImage("solve/perfect15k.png")
 
-setNodeTypes()
-#printNodeTypes()
+    #setNodeTypes()
 
-createSolveImageNodeTypes()
+    for i in range(0, 40):
+
+        print("Reduction: " + str(i))
+
+        setNodeTypes()
+
+        #perform reduction algorithm
+        mazeGrid = path_reduction(mazeGrid, nodeGrid, mazeSize)
+    
+    
+    createReductionImage()
+
+    setNodeTypes()
+
+    createSolveImageNodeTypes()
+
+    #printNodeTypes()
+
+    #createSolveImageNodeTypes()
 
 
-
-#
-solvedPath = dijkstra_solve(nodeGrid, startCoord, endCoord)
-print("Solved path length: " + str(len(solvedPath)))
-print(solvedPath)
+    solvedPath = dijkstra_solve(nodeGrid, startCoord, endCoord)
+    print("Solved path length: " + str(len(solvedPath)))
+    #print(solvedPath)
 
 
-createPathImage(solvedPath)
+    createPathImage(solvedPath)
 
 
 
