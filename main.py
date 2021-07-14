@@ -189,7 +189,7 @@ def printNodeTypes():
 
 
 
-loadMazeImage("small.png")
+loadMazeImage("mazes/normal.png")
 
 setNodeTypes()
 #printNodeTypes()
