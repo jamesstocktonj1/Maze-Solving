@@ -31,16 +31,16 @@ def findNextPaths(maze_grid, x, y):
 
     #if 1 then add that coordinate to the possible paths
     if maze_grid[y][x + 1] == 1:
-        nextSquares.append([y, x + 1])
+        nextSquares.append([x + 1, y])
 
     if maze_grid[y][x - 1] == 1:
-        nextSquares.append([y, x - 1])
+        nextSquares.append([x - 1, y])
 
     if maze_grid[y + 1][x] == 1:
-        nextSquares.append([y + 1, x])
+        nextSquares.append([x, y + 1])
     
     if maze_grid[y - 1][x] == 1:
-        nextSquares.append([y - 1, x])
+        nextSquares.append([x, y - 1])
 
     return nextSquares
 
