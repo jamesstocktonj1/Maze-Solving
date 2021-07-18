@@ -17,39 +17,21 @@ from PIL import Image
 Image.MAX_IMAGE_PIXELS = None
 
 
-mazeFilename = "solve/normal.png"
+mazeFilename = "solve/logo.png"
 
 
             
 
 if __name__ == "__main__":
 
-    """
-    mazeGrid = loadFromFile(mazeFilename)
-
-    for r in mazeGrid:
-        print(r)
-
-
-    mazeStart = getStartCoordinate(mazeGrid)
-
-    print("Maze Start " + str(mazeStart))
-
-    print("Maze End " + str(getEndCoordinate(mazeGrid)))
-
     
-
-    print(findNextPaths(mazeGrid, mazeStart[0], mazeStart[1]))
-
-    nextCoord = findNextPaths(mazeGrid, mazeStart[0], mazeStart[1])
-
-    print(numNewPaths(mazeGrid, nextCoord[0][0], nextCoord[0][1]))
-    """
-
-    
-
     #load maze from image
     mazeGrid = loadFromFile(mazeFilename)
+
+    #perform reduction algorithm (optional)
+    reducedMaze = path_reduction(mazeGrid)
+    exportMazeReduction(reducedMaze, mazeFilename)
+
     
 
     startTime = time.time()
@@ -57,7 +39,8 @@ if __name__ == "__main__":
 
 
     #solve maze depending on file imported (see top)
-    solvedPath = solve_maze(mazeGrid)
+    #solvedPath = solve_maze(mazeGrid)
+    solvedPath = solve_maze(reducedMaze)
 
 
     endTime = time.time()
