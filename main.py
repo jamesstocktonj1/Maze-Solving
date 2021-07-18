@@ -24,18 +24,21 @@ mazeFilename = "solve/logo.png"
 
 if __name__ == "__main__":
 
+    loadMazeImage("solve/perfect15k.png")
+
+    #setNodeTypes()
+
+    for i in range(0, 40):
+
+        print("Reduction: " + str(i))
+
+        setNodeTypes()
+
+        #perform reduction algorithm
+        mazeGrid = path_reduction(mazeGrid, nodeGrid, mazeSize)
     
-    #load maze from image
-    mazeGrid = loadFromFile(mazeFilename)
-
-    #perform reduction algorithm (optional)
-    reducedMaze = path_reduction(mazeGrid)
-    exportMazeReduction(reducedMaze, mazeFilename)
-
     
-
-    startTime = time.time()
-
+    createReductionImage()
 
 
     #solve maze depending on file imported (see top)
