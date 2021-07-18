@@ -37,3 +37,31 @@ def exportSolvedMaze(maze_grid, filename, solved_path):
                 img_solve.putpixel((x, y), ImageColor.getrgb("white"))
 
     img_solve.save(export_filename)
+
+
+#creates an image file with the reduced maze_grid
+def exportMazeReduction(maze_grid, filename):
+
+    #split file name in order to create new file name
+    file_split = filename.split(".")
+
+    #create node filename 
+    export_filename = file_split[0] + "_reduction." + file_split[1]
+
+    print("Creating " + export_filename + "...")
+
+
+    #load new image same size as original maze (RGB)
+    img_solve = Image.new('RGB', (len(maze_grid[0]), len(maze_grid)))
+
+    #increment through maze
+    for y in range(0, len(maze_grid)):
+
+        for x in range(0, len(maze_grid[0])):
+
+            if maze_grid[y][x] == 1:
+
+                img_solve.putpixel((x, y), ImageColor.getrgb("white"))
+
+            
+    img_solve.save(export_filename)
